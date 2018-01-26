@@ -16,7 +16,7 @@ function(recordModule, emailModule) {
     		{
     			var customer = context.newRecord;
         		var customerId = customer.id;
-        		var customerName = customer.getText('companyname');
+        		var customerName = customer.getValue('companyname');
         		var customerEmail = customer.getValue('email');	
         		var salesRep = recordModule.load({
         			type	: recordModule.Type.EMPLOYEE,
@@ -39,6 +39,10 @@ function(recordModule, emailModule) {
         		});
         		salesRep.setValue('comments', salesRepNotes + '\nNew welcome email sent to ' + customerName);
         		salesRep.save();		
+    		}
+    		else
+    		{
+        		log.error('Error', 'Wrong context');
     		}
     	}
     };
