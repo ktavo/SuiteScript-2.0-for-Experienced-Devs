@@ -19,7 +19,7 @@ define([
     {
     	var scriptRef = runtime.getCurrentScript();
     	var customerId = scriptRef.getParameter({
-    		name : ''
+    		name : 'custscript_ora_customer_id'
     	});
     	var orderSearch = search.create({
     		type : 'transaction',
