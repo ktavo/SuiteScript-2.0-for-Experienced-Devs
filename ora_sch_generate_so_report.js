@@ -25,7 +25,8 @@ define([
     		type : 'transaction',
     		filters : [
     			['type', 'anyof', 'SalesOrd'], 'and',
-    			['mainline', 'is', true]			
+    			['mainline', 'is', true], 'and',
+    			['entity', 'anyof', customerId]
     		],
     		columns : ['entity', 'trandate', 'tranid', 'salesrep', 'total']
     	});
