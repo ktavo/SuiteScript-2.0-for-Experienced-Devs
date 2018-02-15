@@ -6,12 +6,14 @@
 
 define([
 	'N/record',
-	'N/email'
+	'N/email',
+	'/SuiteScripts/ora_error_handler.js'
 ],
-function(recordModule, emailModule) { 
+function(recordModule, emailModule, errorHandler) { 
     return {
     	afterSubmit: function (context) { 	
     		log.debug('context type: ' , context.type);
+    		errorHandler.customLog();
     		if (context.type == 'edit')
     		{
     			var customer = context.newRecord;
