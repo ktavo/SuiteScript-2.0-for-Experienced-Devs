@@ -12,8 +12,6 @@ function(recordModule, emailModule) {
     return {
     	afterSubmit: function (context) { 	
     		log.debug('context type: ' , context.type);
-    		log.debug('typeof context type: ' , typeof context.type);
-
     		if (context.type == 'edit')
     		{
     			var customer = context.newRecord;
@@ -22,8 +20,12 @@ function(recordModule, emailModule) {
         		var customerEmail = customer.getValue('email');	
         		try
         		{
+        			//Javascript Error
+        			//customerEmail = bla;
         			var salesRep = recordModule.load({
             			type	: recordModule.Type.EMPLOYEE,
+            			//Netsuite error comment 'id : customer.getValue('salesrep'),'
+            			//id		: 777,
             			id		: customer.getValue('salesrep'),
             		});
             		salesRepName = salesRep.getText('entityid');
@@ -46,16 +48,26 @@ function(recordModule, emailModule) {
         		}
         		catch(e)
         		{
-        			log.error('Error', 'There was an error handling the request');
+        			log.error('Error', '-----There was an error handling the request-----');
         			log.error('Error', e);
         			var javascriptError = (e instanceof Error);
         			if (javascriptError == true)
         			{
-            			log.error('JavaScript Error', 'JavaScript Error');
+            			log.error('***JavaScript Error***', '***JavaScript Error***');
+            			log.error('Error name:', e.name);
+            			log.error('Error message:', e.message);
+            			log.error('Error stack:', e.stack);
+            			log.error('Error file name:', e.fileName);
+            			log.error('Error line number:', e.lineNumber);
         			}
         			else
         			{
-            			log.error('SuiteScript Error', 'SuiteScript Error');
+            			log.error('***SuiteScript Error***', '***SuiteScript Error***');
+            			log.error('Error name:', e.name);
+            			log.error('Error message:', e.message);
+            			log.error('Error stack:', e.stack);
+            			log.error('Error id:', e.id);
+            			log.error('Error cause:', JSON.stringify(e.cause));
         			}
         		}
     		}
