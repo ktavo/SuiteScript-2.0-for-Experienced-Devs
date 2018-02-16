@@ -22,7 +22,7 @@ function(recordModule, emailModule, errorHandler) {
         		try
         		{
         			//Javascript Error
-        			customerEmail = bla;
+        			//customerEmail = bla;
         			var salesRep = recordModule.load({
             			type	: recordModule.Type.EMPLOYEE,
             			//Netsuite error comment 'id : customer.getValue('salesrep'),'
