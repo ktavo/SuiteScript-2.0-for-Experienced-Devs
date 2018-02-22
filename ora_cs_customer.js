@@ -3,11 +3,11 @@
  * @NScriptType ClientScript
  * @NModuleScope SameAccount
  */
-define(['N/runtime'],
+define(['N/runtime', 'N/record'],
 /**
  * @param {runtime} runtime
  */
-function(runtime) {
+function(runtime, record) {
     
     /**
      * Function to be executed after page is initialized.
@@ -151,7 +151,17 @@ function(runtime) {
      * @since 2015.2
      */
     function saveRecord(scriptContext) {
-
+    	var scriptObject = runtime.getCurrentScript();
+    	var scriptParameter = scriptObject.getParameter('custscript_ora_display_notification');
+    	log.debug('scriptContext', scriptContext);
+    	if (scriptParameter == true)
+    	{
+    		var currentRecord = scriptContext.currentRecord;
+    		var customerName = currentRecord.getValue('entityid');
+        	//log.debug('currentRecord', currentRecord);
+        	//log.debug('customerName', customerName);
+    		var reminder = confirm('Please call ' + customerName + ' to welcome them as a new customer before saving the record. Click cancel to go back to the record');		
+    	}
     }
 
     return {
