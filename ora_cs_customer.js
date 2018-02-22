@@ -153,7 +153,7 @@ function(runtime, record) {
     function saveRecord(scriptContext) {
     	var scriptObject = runtime.getCurrentScript();
     	var scriptParameter = scriptObject.getParameter('custscript_ora_display_notification');
-    	log.debug('scriptContext', scriptContext);
+    	//log.debug('scriptContext', scriptContext);
     	if (scriptParameter == true)
     	{
     		var currentRecord = scriptContext.currentRecord;
@@ -161,6 +161,12 @@ function(runtime, record) {
         	//log.debug('currentRecord', currentRecord);
         	//log.debug('customerName', customerName);
     		var reminder = confirm('Please call ' + customerName + ' to welcome them as a new customer before saving the record. Click cancel to go back to the record');		
+        	return reminder;
+    	}
+    	else
+    	{
+        	log.debug('scriptParameter', 'Disabled');
+        	return true;
     	}
     }
 
