@@ -18,10 +18,14 @@ function(record, search) {
      */
     function pageInit(scriptContext) {
     	log.debug('On ora_cs_promise_so.js','');
-    	nonPromiseCall(304);
     	//createSearch can't be called if the savedSearch is already created
         //createSearch();
-        loadAndRunSearch();
+        var salesOrders = loadAndRunSearch();
+        log.debug('salesOrder array: ', salesOrders);
+        for (var i = 0; i < salesOrders.length; i++)
+        {
+        	nonPromiseCall(salesOrders[i]);
+        }
     }
     
     
@@ -39,10 +43,10 @@ function(record, search) {
         });
         mySalesOrderSearch.save();
     }
-    //createSearch();
 	
     
     function loadAndRunSearch() {
+    	var salesOrderArray = new Array();
     	log.debug('ora_cs_promise_so.js', 'Running search ....');
         var mySearch = search.load({
             id: 'customsearch_my_so_search'
@@ -51,25 +55,25 @@ function(record, search) {
         mySearch.run().each(function(result) {
             //log.debug('Result: ', result);
             var salesOrderId = result.id;
-            log.debug('Search on entity', 'salesOrderId1: ' + salesOrderId);
-        	var entity = result.getValue({
+            salesOrderArray.push(salesOrderId);
+            //log.debug('Search on entity', 'salesOrderId1: ' + salesOrderId);
+        	/*
+            var entity = result.getValue({
                 name: 'entity'
             });
             var subsidiary = result.getValue({
                 name: 'subsidiary'
             });
+            */
         	counter++;
-        	if (counter == 10)
+        	if (counter == 20)
         		{
         			return false;
         		}
             return true;
         });
-    }
-    //loadAndRunSearch();
-    	
-    
-    
+        return salesOrderArray;
+    }  
     
     
     /*function promiseCall(salesOrderId){
@@ -86,7 +90,7 @@ function(record, search) {
     	var totalAmount = theSalesOrder.getValue('total');
     	log.debug('Synchronous Sales Order Total', 'Sales Order-' + salesOrderId + '- Total: ' + totalAmount);
     }
-    
+ 
 
     return {
         pageInit: pageInit     
