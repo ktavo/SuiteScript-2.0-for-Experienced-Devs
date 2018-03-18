@@ -25,6 +25,7 @@ function(record, search) {
         for (var i = 0; i < salesOrders.length; i++)
         {
         	nonPromiseCall(salesOrders[i]);
+            //promiseCall(salesOrders[i]);
         }
     }
     
@@ -76,12 +77,7 @@ function(record, search) {
     }  
     
     
-    /*function promiseCall(salesOrderId){
-    	
-    	
-    }*/
-
-   function nonPromiseCall(salesOrderId){
+    function nonPromiseCall(salesOrderId){
     	var theSalesOrder = record.load({
     	    type: record.Type.SALES_ORDER, 
     	    id: salesOrderId,
@@ -90,7 +86,25 @@ function(record, search) {
     	var totalAmount = theSalesOrder.getValue('total');
     	log.debug('Synchronous Sales Order Total', 'Sales Order-' + salesOrderId + '- Total: ' + totalAmount);
     }
- 
+    
+    
+    function promiseCall(salesOrderId){
+    	//log.debug('On Promise call', 'Sales Order-' + salesOrderId);
+    	var theSalesOrder = record.load.promise({
+    		type: record.Type.SALES_ORDER,
+    		id: salesOrderId,
+    	}).then(
+    		//The salesOrder value is returned by record .load.promise 
+    		function(salesOrder){
+    			//Get total field and log that in the console
+    			var totalAmount = salesOrder.getValue('total');
+    	    	log.debug('Asynchronous Sales Order Total', 'Sales Order-' + salesOrderId + '- Total: ' + totalAmount);
+    		}	
+    	).catch(function onRejected(reason){
+    		log.debug('Error loading sales order', '' + reason);
+    	});    	
+    }
+
 
     return {
         pageInit: pageInit     
