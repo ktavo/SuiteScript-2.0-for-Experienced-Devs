@@ -24,8 +24,8 @@ function(record, search) {
         log.debug('salesOrder array: ', salesOrders);
         for (var i = 0; i < salesOrders.length; i++)
         {
-        	nonPromiseCall(salesOrders[i]);
-            //promiseCall(salesOrders[i]);
+        	//nonPromiseCall(salesOrders[i]);
+            promiseCall(salesOrders[i]);
         }
     }
     
