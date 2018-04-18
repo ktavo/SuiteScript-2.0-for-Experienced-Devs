@@ -52,24 +52,19 @@ function(record, search, ui, email, runtime) {
             //log.debug('Result: ', result);
             var accountId = result.id;
             accountArray.push(accountId);
-            log.debug('Search on entity', 'accountId: ' + accountId);            
-        	/*
-            var entity = result.getValue({
-                name: 'entity'
-            });
-            */
+            //log.debug('Search on entity', 'accountId: ' + accountId);            
         	counter++;
         	if (counter == 5)
-        		{
-        			//return false;
-        		}
+        	{
+        		//return false;
+        	}
             return true;
         });
         return accountArray;
 	}
 	   
 	function deleteAccounts(accountId){
-    	log.debug('On delete accoutns call', 'Account:' + accountId);
+    	//log.debug('On delete accoutns call', 'Account:' + accountId);
     	try
     	{
     		var deleteAccountRecord = record.delete({
@@ -80,10 +75,9 @@ function(record, search, ui, email, runtime) {
     	}
     	catch(reason)
     	{
-    		log.debug('Account can\'t be deleted', 'Account ID: '+  accountId + ' Reason:' + reason);    			
+    		//log.debug('Account can\'t be deleted', 'Account ID: '+  accountId + ' Reason:' + reason);    			
     		try
     		{
-    			//var dletedAccountId
     			record.submitFields({
         		    type: record.Type.ACCOUNT,
         		    id: accountId,
@@ -105,5 +99,4 @@ function(record, search, ui, email, runtime) {
     return {
         onRequest: onRequest
     };
-    
 });
