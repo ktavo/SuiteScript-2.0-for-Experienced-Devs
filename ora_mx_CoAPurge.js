@@ -3,7 +3,7 @@
  * @NScriptType Suitelet
  * @NModuleScope SameAccount
  */
-define(['N/record', 'N/search', 'N/ui/serverWidget', 'N/email', 'N/runtime'],
+define(['N/record', 'N/search', 'N/ui/serverWidget', 'N/email', 'N/runtime', 'N/redirect'],
 /**
  * @param {record} record
  * @param {search} search
@@ -11,7 +11,7 @@ define(['N/record', 'N/search', 'N/ui/serverWidget', 'N/email', 'N/runtime'],
  * @param {email} email
  * @param {runtime} runtime
  */
-function(record, search, ui, email, runtime) {
+function(record, search, ui, email, runtime, redirect) {
    
     /**
      * Definition of the Suitelet script trigger point.
@@ -33,13 +33,9 @@ function(record, search, ui, email, runtime) {
         } else {
             var request = context.request;
             var accountsArray = loadAndRunCoASearch();
-            for (var i = 0; i < accountsArray.length; i++)
-            {
-                deleteAccounts(accountsArray[i]);
-            }            
+            deleteAccounts(accountsArray);          
         }
     }
-	
 	
 	function loadAndRunCoASearch() {
     	var accountArray = new Array();
@@ -63,40 +59,67 @@ function(record, search, ui, email, runtime) {
         return accountArray;
 	}
 	   
-	function deleteAccounts(accountId){
-    	//log.debug('On delete accoutns call', 'Account:' + accountId);
-    	try
-    	{
-    		var deleteAccountRecord = record.delete({
-        		type: record.Type.ACCOUNT,
-        		id: accountId,
-        	});
-    		log.debug('Account Deletion successful', 'Account ID:' + accountId);    		
-    	}
-    	catch(reason)
-    	{
-    		//log.debug('Account can\'t be deleted', 'Account ID: '+  accountId + ' Reason:' + reason);    			
-    		try
-    		{
-    			record.submitFields({
-        		    type: record.Type.ACCOUNT,
-        		    id: accountId,
-        		    values: {
-        		    	isinactive: true
-        		    },
-        		    options: {
-        		        ignoreMandatoryFields : true
-        		    }
-        		});    			
-    		}
-    		catch(reason)
-    		{
-        		log.error('Account can\'t be deleted or deactivated', 'Account ID: ' + accountId + ' Reason:' + reason);    			    			
-    		}    		
-    	}
-    }	
-	
+	function deleteAccounts(accountsList){
+    	log.debug('On delete accoutns call', 'Account list size:' + accountsList.length);
+		//return 0;
+		
+		var parentAccounts = new Array();
+        while (accountsList.length > 0)
+        {
+        	try
+        	{
+        		var deleteAccountRecord = record.delete({
+            		type: record.Type.ACCOUNT,
+            		id: accountsList[0],
+            	});
+        		log.debug('Account Deletion successful', 'Account ID:' + accountsList[0]); 
+        		accountsList.shift();
+        	}
+        	catch(reason)
+        	{
+        		log.error('Account can\'t be deleted', 'Account ID: '+  accountsList[0] + ' Reason:' + reason.name);
+        		if (reason.name == 'THIS_RECORD_CANNOT_BE_DELETED_BECAUSE_IT_HAS_DEPENDENT_RECORDS')
+        		{
+        			accountsList.push(accountsList.shift());        			
+        		}
+        		else
+        		{
+        			try
+            		{
+            			record.submitFields({
+                		    type: record.Type.ACCOUNT,
+                		    id: accountsList[0],
+                		    values: {
+                		    	isinactive: true
+                		    },
+                		    options: {
+                		        ignoreMandatoryFields : true
+                		    }
+                		});
+                		accountsList.shift();
+            		}
+            		catch(reason)
+            		{
+                		log.error('Account can\'t be deleted or deactivated', 'Account ID: ' + accountsList[0] + ' Reason:' + reason.name);
+                		accountsList.shift();
+            		}    			
+        		}
+        	}
+        }
+        redirect.toSuitelet({
+            scriptId: 257,
+            deploymentId: 1,
+            parameters: {'':''} 
+        });
+    }
     return {
         onRequest: onRequest
     };
 });
+
+
+
+
+
+
+
