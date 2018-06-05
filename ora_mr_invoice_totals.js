@@ -3,7 +3,9 @@
  * @NScriptType MapReduceScript
  * @NModuleScope SameAccount
  */
-define(['N/search'],
+define([
+	'N/search'
+],
 /**
  * @param {search} search
  */
@@ -20,7 +22,15 @@ function(search) {
      * @since 2015.1
      */
     function getInputData() {
-
+    	var invoiceSearch = search.create({
+    		type : 'transaction',
+    		filters: [
+    			['type', 'anyof', 'CustInv'], 'and', 
+    			['mainline', 'is', true],
+    		],
+			columns : ['entity', 'total']
+    	});    	
+    	return invoiceSearch;
     }
 
     /**
@@ -30,6 +40,14 @@ function(search) {
      * @since 2015.1
      */
     function map(context) {
+    	var searchResult = JSON.parse(context.value);
+    	
+    	log.debug('RAW Map Data', context.value);
+    	
+    	context.write({
+    		key 	: 	searchResult.values.entity.text;
+    		value 	:	searchResult.values.total
+    	});
 
     }
 
