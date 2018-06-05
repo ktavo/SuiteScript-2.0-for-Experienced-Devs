@@ -45,7 +45,7 @@ function(search) {
     	log.debug('RAW Map Data', context.value);
     	
     	context.write({
-    		key 	: 	searchResult.values.entity.text;
+    		key 	: 	searchResult.values.entity.text,
     		value 	:	searchResult.values.total
     	});
 
