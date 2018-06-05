@@ -41,14 +41,11 @@ function(search) {
      */
     function map(context) {
     	var searchResult = JSON.parse(context.value);
-    	
-    	log.debug('RAW Map Data', context.value);
-    	
+    	log.debug('RAW Map Data', context.value);    	
     	context.write({
     		key 	: 	searchResult.values.entity.text,
     		value 	:	searchResult.values.total
     	});
-
     }
 
     /**
@@ -58,7 +55,11 @@ function(search) {
      * @since 2015.1
      */
     function reduce(context) {
-
+    	var total = 0;
+    	for (var i in context.values){
+    		total += parseFloat(context.values[i]);  	
+    	}
+    	log.debug(context.key, total);
     }
 
 
@@ -69,6 +70,11 @@ function(search) {
      * @since 2015.1
      */
     function summarize(summary) {
+    	var type = summary.toString();
+    	log.audit(type + ' Usage Consumed ', summary.usage);
+    	log.audit(type + ' Number of queues ', summary.concurrency);
+    	log.audit(type + ' Number of yields ', summary.yields);
+
 
     }
 
